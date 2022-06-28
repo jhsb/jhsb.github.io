@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://blog.114444.xyz</id>
+    <title>Zhaire</title>
+    <updated>2022-06-28T14:21:42.478Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://blog.114444.xyz"/>
+    <link rel="self" href="https://blog.114444.xyz/atom.xml"/>
+    <subtitle>Zhaire的小破站</subtitle>
+    <logo>https://blog.114444.xyz/images/avatar.png</logo>
+    <icon>https://blog.114444.xyz/favicon.ico</icon>
+    <rights>All rights reserved 2022, Zhaire</rights>
+    <entry>
+        <title type="html"><![CDATA[宝塔面板“反戴”：悄悄把网站变成自己的]]></title>
+        <id>https://blog.114444.xyz/post/BT-fandai-jiaocheng/</id>
+        <link href="https://blog.114444.xyz/post/BT-fandai-jiaocheng/">
+        </link>
+        <updated>2022-06-28T14:18:10.000Z</updated>
+        <summary type="html"><![CDATA[<p>宝塔面板“反戴”配置，估计很多人都很熟悉，不过要想用得好还需要在稍微的了解下。这篇文章，就来说说，如何更好的使用“反戴”，悄悄的把一个网站完全变成自己的。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>宝塔面板“反戴”配置，估计很多人都很熟悉，不过要想用得好还需要在稍微的了解下。这篇文章，就来说说，如何更好的使用“反戴”，悄悄的把一个网站完全变成自己的。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【Python】QQ查IP工具]]></title>
+        <id>https://blog.114444.xyz/post/python-qq-ip-chaxun/</id>
+        <link href="https://blog.114444.xyz/post/python-qq-ip-chaxun/">
+        </link>
+        <updated>2022-06-26T06:41:27.000Z</updated>
+        <summary type="html"><![CDATA[<p>根据wireshark分析可知，通过分析qq语音通话，发现采用的是dup协议（应该是叫这个）<br>
+检测数据包的标志020048即可</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>根据wireshark分析可知，通过分析qq语音通话，发现采用的是dup协议（应该是叫这个）<br>
+检测数据包的标志020048即可</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[在Debian/Ubuntu上使用rclone挂载Google Drive网盘]]></title>
+        <id>https://blog.114444.xyz/post/debian-rclone-gdrive/</id>
+        <link href="https://blog.114444.xyz/post/debian-rclone-gdrive/">
+        </link>
+        <updated>2022-06-22T02:33:58.000Z</updated>
+        <summary type="html"><![CDATA[<p>说明：我们很多人喜欢用VPS做离线下载，不过由于有的服务器硬盘太小了，装不了太多电影资源啥的，我们就需要想办法了，之前说过可以通过挂载FTP来增大空间，参考：Linux VPS通过安装CurlFtpFS来挂载FTP，这里再说个挂载Google Drive网盘的方法，毕竟Google Drive有15G免费的空间，有的也有无限空间，都可以利用上去。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>说明：我们很多人喜欢用VPS做离线下载，不过由于有的服务器硬盘太小了，装不了太多电影资源啥的，我们就需要想办法了，之前说过可以通过挂载FTP来增大空间，参考：Linux VPS通过安装CurlFtpFS来挂载FTP，这里再说个挂载Google Drive网盘的方法，毕竟Google Drive有15G免费的空间，有的也有无限空间，都可以利用上去。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[在DEBIAN上安装QBITTORRENT-NOX]]></title>
+        <id>https://blog.114444.xyz/post/debian-install-qbittorrent-box/</id>
+        <link href="https://blog.114444.xyz/post/debian-install-qbittorrent-box/">
+        </link>
+        <updated>2022-06-22T02:24:01.000Z</updated>
+        <summary type="html"><![CDATA[<p>按下面命令操作即可</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>按下面命令操作即可</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Debian 一键开启自带原生BBR]]></title>
+        <id>https://blog.114444.xyz/post/debian-bbr/</id>
+        <link href="https://blog.114444.xyz/post/debian-bbr/">
+        </link>
+        <updated>2022-06-21T02:52:01.000Z</updated>
+        <summary type="html"><![CDATA[<p>复制以下命令，直接粘贴进SSH即可。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>复制以下命令，直接粘贴进SSH即可。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Debian在docker下安装qbittorrent并配合rclone上传]]></title>
+        <id>https://blog.114444.xyz/post/debian-qbittorrent-rclone-googledrive/</id>
+        <link href="https://blog.114444.xyz/post/debian-qbittorrent-rclone-googledrive/">
+        </link>
+        <updated>2022-06-20T12:01:38.000Z</updated>
+        <summary type="html"><![CDATA[<p>因为在设置 qBittorrent 的时候发现有一个“Torrent 完成时运行外部程序”的设置，我就在想能不能用这个方法下载 PT 然后自动传到 Google Drive，一番寻找找到了方法，在此记录一下过程。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>因为在设置 qBittorrent 的时候发现有一个“Torrent 完成时运行外部程序”的设置，我就在想能不能用这个方法下载 PT 然后自动传到 Google Drive，一番寻找找到了方法，在此记录一下过程。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[在线markdown编辑器]]></title>
+        <id>https://blog.114444.xyz/post/online-markdown-editor/</id>
+        <link href="https://blog.114444.xyz/post/online-markdown-editor/">
+        </link>
+        <updated>2022-06-20T11:59:11.000Z</updated>
+        <summary type="html"><![CDATA[<p>这里推荐大家一款编辑器，为网页在线版</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>这里推荐大家一款编辑器，为网页在线版</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[代理/机场"节点送中"的表现]]></title>
+        <id>https://blog.114444.xyz/post/ip-songzhong-rule/</id>
+        <link href="https://blog.114444.xyz/post/ip-songzhong-rule/">
+        </link>
+        <updated>2022-06-20T11:54:29.000Z</updated>
+        <summary type="html"><![CDATA[<p>出现以下特征中的任意一点，表示你的IP已经凉凉了：</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>出现以下特征中的任意一点，表示你的IP已经凉凉了：</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[甲骨文封号潜规则]]></title>
+        <id>https://blog.114444.xyz/post/oracle-ban-rule/</id>
+        <link href="https://blog.114444.xyz/post/oracle-ban-rule/">
+        </link>
+        <updated>2022-06-20T11:52:37.000Z</updated>
+        <summary type="html"><![CDATA[<p>最近oracle的风控又上来了，这里介绍点潜规则普及下大家。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>最近oracle的风控又上来了，这里介绍点潜规则普及下大家。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[流量消失器网页版，在线消耗你的流量！]]></title>
+        <id>https://blog.114444.xyz/post/shua-web/</id>
+        <link href="https://blog.114444.xyz/post/shua-web/">
+        </link>
+        <updated>2022-06-20T11:51:13.000Z</updated>
+        <summary type="html"><![CDATA[<p>如果你月底流量特别多的话，可以用以下网页在线刷掉你的流量！<br>
+包含国内服务器版本。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>如果你月底流量特别多的话，可以用以下网页在线刷掉你的流量！<br>
+包含国内服务器版本。</p>
+]]></content>
+    </entry>
+</feed>
