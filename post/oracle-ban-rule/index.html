@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>甲骨文封号潜规则 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="最近oracle的风控又上来了，这里介绍点潜规则普及下大家。
+
+1，二验一般是3-7天，验证1USD/SGD左右
+验证失败直接死
+2，还没有足够的证据证明同卡连坐（包含升级）
+3，三验并非全是大多数账号的死因
+4，长时间没动静后开高配机器可..." />
+    <meta name="keywords" content="VPS,折腾" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">甲骨文封号潜规则</h2>
+            <div class="post-date">2022-06-20</div>
+            
+            <div class="post-content" v-pre>
+              <p>最近oracle的风控又上来了，这里介绍点潜规则普及下大家。</p>
+<!-- more -->
+<p>1，二验一般是3-7天，验证1USD/SGD左右<br>
+验证失败直接死<br>
+2，还没有足够的证据证明同卡连坐（包含升级）<br>
+3，三验并非全是大多数账号的死因<br>
+4，长时间没动静后开高配机器可能触发风控<br>
+5，登陆IP不重复即可，注册IP会关联，但是也有极少数重复登陆IP的汇报（特征为登陆后403Fb）【年少不更事，曾经一个IP登录N多号，毕竟很多地区没有公网IP，还行正常】<br>
+5，《重点》40-60天是风控关键期，此时注册IP已释放，原IP应该可以继续注册（还是抽签）<br>
+6，《重点》同IP有新号注册成功就杀一个老号，封号时间为UTC 00:00-UTC 1:00，疑似特征为配额0，能登陆【不一定，我同一个IP曾经注册两个，都活着】<br>
+7，同IP容号量可能为1，或者很小的配额<br>
+8，境外家宽IP注册容易，中国IP注册难<br>
+9，Your Oracle Cloud account has been disabled不一定是封号，The following services are suspended and access to these services is disabled才是封号，有界面反应问题可以尝试邮件联系官方客服。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/Xb91mZxfN/" class="tag">
+                    VPS
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/4zQCH92s8s/" class="tag">
+                    折腾
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/shua-web/">
+                  <h3 class="post-title">
+                    流量消失器网页版，在线消耗你的流量！
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

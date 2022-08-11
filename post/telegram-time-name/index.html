@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>利用Telethon让Telegram的名字变成实时的时间 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="当你看到一个人以时间作为名字，当时间改变它的名字也会随之改变。你一定会好奇这是什么技术实现的，接下来我们一起看看吧。
+
+Telethon官方参考文档：https://telethon.readthedocs.io
+它不仅有时间，还有emoj..." />
+    <meta name="keywords" content="telegram,折腾,debian,python" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">利用Telethon让Telegram的名字变成实时的时间</h2>
+            <div class="post-date">2022-06-20</div>
+            
+            <div class="post-content" v-pre>
+              <p>当你看到一个人以时间作为名字，当时间改变它的名字也会随之改变。你一定会好奇这是什么技术实现的，接下来我们一起看看吧。</p>
+<!-- more -->
+<p>Telethon官方参考文档：https://telethon.readthedocs.io</p>
+<p>它不仅有时间，还有emoji表情轮流替换，大约30秒刷新一次名字</p>
+<p>该教程使用Debian10系统作为演示，Ubuntu系统也适用。Centos系统大体一样，但是会缺少某些源以及某些命令使用语法也不一样，这个就自己去查资料了。</p>
+<p>首先去这个网站https://my.telegram.org/ 创建一个API，登录你的tg，选择API development tools，只要填App title和Short name即可(随便填啥)。获得api_id和api_hash并保存好这两项。</p>
+<p>vps准备工作：python3，python3-pip<br>
+首先将vps时间调至北京时间，因为此小程序是随着系统时间更新的，而咱们的国外服务器都不是北京时间</p>
+<p>查看服务器当前时间</p>
+<p><code>date -R</code><br>
+如果不是北京时间用以下命令修改时间</p>
+<p><code>dpkg-reconfigure tzdata</code></p>
+<p>debian10系统一般自带python3，我们用以下命令检查python3</p>
+<p><code>python3 -V</code></p>
+<p>可以看到系统自带了Python 3.7.3<br>
+安装git</p>
+<p><code>apt-get install git</code><br>
+安装pip3</p>
+<p><code>sudo apt-get install python3-pip</code><br>
+下载这款程序源码到vps上</p>
+<p><code>git clone https://github.com/8838/Telegram-Name-Updating.git</code><br>
+打开Telegram-Name-Updating文件夹</p>
+<p><code>cd Telegram-Name-Updating</code><br>
+安装telethon</p>
+<p><code>pip3 install -r requirements.txt</code><br>
+启动小程序并挂在后台运行</p>
+<p><code>python3 tg_username_update.py &amp;</code><br>
+根据提示输入api_id和api_hash。接着输入手机号，前面要带+号，不能带括号，例如:中国号码+8612345678901。然后输入手机短信或者TG上收到的6位验证码。（如果tg账号开启了两步验证，证根据提示再输入两步验证的密码）去tg看看你的名字有变化就表示OK了！</p>
+<p>VPS重启后可使用下面命令重新运行：</p>
+<pre><code class="language-shell">cd Telegram-Name-Updating
+python3 tg_username_update.py &amp;
+</code></pre>
+<!-- more -->
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/eeqC_wC9-/" class="tag">
+                    telegram
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/4zQCH92s8s/" class="tag">
+                    折腾
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/1EBFGHyOq7/" class="tag">
+                    debian
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/EMUUlxD8Ag/" class="tag">
+                    python
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/debian-mount-disk/">
+                  <h3 class="post-title">
+                    Debian设置开机自动加载硬盘
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

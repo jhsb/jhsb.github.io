@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>Debian在docker下安装qbittorrent并配合rclone上传 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="因为在设置 qBittorrent 的时候发现有一个“Torrent 完成时运行外部程序”的设置，我就在想能不能用这个方法下载 PT 然后自动传到 Google Drive，一番寻找找到了方法，在此记录一下过程。
+
+首先先在设置中的 Web..." />
+    <meta name="keywords" content="VPS,折腾,debian" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">Debian在docker下安装qbittorrent并配合rclone上传</h2>
+            <div class="post-date">2022-06-20</div>
+            
+            <div class="post-content" v-pre>
+              <p>因为在设置 qBittorrent 的时候发现有一个“Torrent 完成时运行外部程序”的设置，我就在想能不能用这个方法下载 PT 然后自动传到 Google Drive，一番寻找找到了方法，在此记录一下过程。</p>
+<!-- more -->
+<p>首先先在设置中的 Web UI 中把“对本地主机上的客户端跳过身份验证”勾上，我一开始没有勾上，获取不了 cookie 加不了标签。先勾上有备无患。</p>
+<p>没有勾上获取不了 cookie</p>
+<p>新建一个qb_auto.sh 写入：</p>
+<pre><code class="language-shell">#!/bin/sh
+torrent_name=$1
+content_dir=$2
+root_dir=$3
+save_dir=$4
+files_num=$5
+torrent_size=$6
+file_hash=$7
+
+qb_version=&quot;4.2.0&quot; #如4.0.4、4.1.9.1、4.2.0等，不支持3.1.X
+qb_username=&quot;admin&quot; #qb用户名
+qb_password=&quot;adminadmin&quot; #qb密码
+qb_web_url=&quot;http://localhost:8080&quot; #QB web路径
+leeching_mode=&quot;true&quot; #吸血模式 设为true 上传完后自动删除种子及数据 否则不删除，继续做种
+log_dir=&quot;/root/qbauto&quot; #日志目录
+rclone_dest=&quot;gdrive&quot; #rclone destination关键字 运行rclone config查看name字段即可
+rclone_parallel=&quot;32&quot; #rclone上传线程 默认4
+auto_del_flag=&quot;rclone&quot;#添加标签或者分类来标识已上传的种子 v4.0.4+版本添加标签“rclone”，低版本通过添加分类“rclone”标识
+
+if [ ! -d ${log_dir} ]
+then
+	mkdir -p ${log_dir}
+fi
+
+version=$(echo $qb_version | grep -P -o &quot;([0-9]\.){2}[0-9]&quot; | sed s/\\.//g)
+
+function qb_login(){
+	if [ ${version} -gt 404 ]
+	then
+		qb_v=&quot;1&quot;
+		cookie=$(curl -i --header &quot;Referer: ${qb_web_url}&quot; --data &quot;username=${qb_username}&amp;password=${qb_password}&quot; &quot;${qb_web_url}/api/v2/auth/login&quot; | grep -P -o 'SID=\S{32}')
+		if [ -n ${cookie} ]
+		then
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 登录成功！cookie:${cookie}&quot; &gt;&gt; ${log_dir}/autodel.log
+
+		else
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 登录失败！&quot; &gt;&gt; ${log_dir}/autodel.log
+		fi
+	elif [[ ${version} -le 404 &amp;&amp; ${version} -ge 320 ]]
+	then
+		qb_v=&quot;2&quot;
+		cookie=$(curl -i --header &quot;Referer: ${qb_web_url}&quot; --data &quot;username=${qb_username}&amp;password=${qb_password}&quot; &quot;${qb_web_url}/login&quot; | grep -P -o 'SID=\S{32}')
+		if [ -n ${cookie} ]
+		then
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 登录成功！cookie:${cookie}&quot; &gt;&gt; ${log_dir}/autodel.log
+		else
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 登录失败&quot; &gt;&gt; ${log_dir}/autodel.log
+		fi
+	elif [[ ${version} -ge 310 &amp;&amp; ${version} -lt 320 ]]
+	then
+		qb_v=&quot;3&quot;
+		echo &quot;陈年老版本，请及时升级&quot;
+		exit
+	else
+		qb_v=&quot;0&quot;
+		exit
+	fi
+}
+
+
+
+function qb_del(){
+	if [ ${leeching_mode} == &quot;true&quot; ]
+	then
+		if [ ${qb_v} == &quot;1&quot; ]
+		then
+			curl &quot;${qb_web_url}/api/v2/torrents/delete?hashes=${file_hash}&amp;deleteFiles=true&quot; --cookie ${cookie}
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 删除成功！种子名称:${torrent_name}&quot; &gt;&gt; ${log_dir}/qb.log
+		elif [ ${qb_v} == &quot;2&quot; ]
+		then
+			curl -X POST -d &quot;hashes=${file_hash}&quot; &quot;${qb_web_url}/command/deletePerm&quot; --cookie ${cookie}
+		else
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 删除成功！种子文件:${torrent_name}&quot; &gt;&gt; ${log_dir}/qb.log
+			echo &quot;qb_v=${qb_v}&quot; &gt;&gt; ${log_dir}/qb.log
+		fi
+	else
+		echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 不自动删除已上传种子&quot; &gt;&gt; ${log_dir}/qb.log
+	fi
+}
+
+function rclone_copy(){
+	if [ ${type} == &quot;file&quot; ]
+	then
+		rclone_copy_cmd=$(rclone -v copy --transfers ${rclone_parallel} --log-file  ${log_dir}/qbauto_copy.log &quot;${content_dir}&quot; ${rclone_dest}:qbauto/)
+	elif [ ${type} == &quot;dir&quot; ]
+	then
+		rclone_copy_cmd=$(rclone -v copy --transfers ${rclone_parallel} --log-file ${log_dir}/qbauto_copy.log &quot;${content_dir}&quot;/ ${rclone_dest}:qbauto/&quot;${torrent_name}&quot;)
+	fi
+}
+
+function qb_add_auto_del_tags(){
+	if [ ${qb_v} == &quot;1&quot; ]
+	then
+		curl -X POST -d &quot;hashes=${file_hash}&amp;tags=${auto_del_flag}&quot; &quot;${qb_web_url}/api/v2/torrents/addTags&quot; --cookie &quot;${cookie}&quot;
+	elif [ ${qb_v} == &quot;2&quot; ]
+	then
+		curl -X POST -d &quot;hashes=${file_hash}&amp;category=${auto_del_flag}&quot; &quot;${qb_web_url}/command/setCategory&quot; --cookie ${cookie}
+	else
+		echo &quot;qb_v=${qb_v}&quot; &gt;&gt; ${log_dir}/qb.log
+	fi
+}
+
+if [ -f &quot;${content_dir}&quot; ]
+then
+   echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 类型：文件&quot; &gt;&gt; ${log_dir}/qb.log
+   type=&quot;file&quot;
+   rclone_copy
+   qb_login
+   qb_add_auto_del_tags
+   qb_del
+elif [ -d &quot;${content_dir}&quot; ]
+then 
+   echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 类型：目录&quot; &gt;&gt; ${log_dir}/qb.log
+   type=&quot;dir&quot;
+   rclone_copy
+   qb_login
+   qb_add_auto_del_tags
+   qb_del
+else
+   echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 未知类型，取消上传&quot; &gt;&gt; ${log_dir}/qb.log
+fi
+
+echo &quot;种子名称：${torrent_name}&quot; &gt;&gt; ${log_dir}/qb.log
+echo &quot;内容路径：${content_dir}&quot; &gt;&gt; ${log_dir}/qb.log
+echo &quot;根目录：${root_dir}&quot; &gt;&gt; ${log_dir}/qb.log
+echo &quot;保存路径：${save_dir}&quot; &gt;&gt; ${log_dir}/qb.log
+echo &quot;文件数：${files_num}&quot; &gt;&gt; ${log_dir}/qb.log
+echo &quot;文件大小：${torrent_size}Bytes&quot; &gt;&gt; ${log_dir}/qb.log
+echo &quot;HASH:${file_hash}&quot; &gt;&gt; ${log_dir}/qb.log
+echo &quot;Cookie:${cookie}&quot; &gt;&gt; ${log_dir}/qb.log
+echo -e &quot;-------------------------------------------------------------\n&quot; &gt;&gt; ${log_dir}/qb.log
+</code></pre>
+<p>给予权限<br>
+<code>chmod +x qb_auto.sh</code></p>
+<p>qB WEB UI 勾选“Torrent 完成时运行外部程序”，填上<br>
+<code>bash /root/qb_auto.sh  &quot;%N&quot; &quot;%F&quot; &quot;%R&quot; &quot;%D&quot; &quot;%C&quot; &quot;%Z&quot; &quot;%I&quot;</code></p>
+<p>新建：ratio_mon.sh 写入</p>
+<pre><code class="language-shell">#!/bin/sh
+qb_version=&quot;4.2.0&quot; #如4.0.4、4.1.9.1、4.2.0等，不支持3.1.X
+qb_username=&quot;admin&quot; #qb用户名
+qb_password=&quot;adminadmin&quot; #qb密码
+qb_web_url=&quot;http://localhost:8080&quot; #QB web路径
+log_dir=&quot;/root/qbauto&quot;
+expect_ratio=0.1
+auto_del_flag=&quot;rclone&quot;
+
+if [ ! -d ${log_dir} ]
+then
+	mkdir -p ${log_dir}
+fi
+
+version=$(echo ${qb_version} | grep -P -o &quot;([0-9]\.){2}[0-9]&quot; | sed s/\\.//g)
+
+function qb_login(){
+	if [ ${version} -gt 404 ]
+	then
+		qb_v=&quot;1&quot;
+		cookie=$(curl -i --header &quot;Referer: ${qb_web_url}&quot; --data &quot;username=${qb_username}&amp;password=${qb_password}&quot; &quot;${qb_web_url}/api/v2/auth/login&quot; | grep -P -o 'SID=\S{32}')
+		if [ -n ${cookie} ]
+		then
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 登录成功！cookie:${cookie}&quot; &gt;&gt; ${log_dir}/autodel.log
+
+		else
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 登录失败！&quot; &gt;&gt; ${log_dir}/autodel.log
+		fi
+	elif [[ ${version} -le 404 &amp;&amp; ${version} -ge 320 ]]
+	then
+		qb_v=&quot;2&quot;
+		cookie=$(curl -i --header &quot;Referer: ${qb_web_url}&quot; --data &quot;username=${qb_username}&amp;password=${qb_password}&quot; &quot;${qb_web_url}/login&quot; | grep -P -o 'SID=\S{32}')
+		if [ -n ${cookie} ]
+		then
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 登录成功！cookie:${cookie}&quot; &gt;&gt; ${log_dir}/autodel.log
+		else
+			echo &quot;[$(date '+%Y-%m-%d %H:%M:%S')] 登录失败&quot; &gt;&gt; ${log_dir}/autodel.log
+		fi
+	elif [[ ${version} -ge 310 &amp;&amp; ${version} -lt 320 ]]
+	then
+		qb_v=&quot;3&quot;
+		echo &quot;陈年老版本，请及时升级&quot;
+		exit
+	else
+		qb_v=&quot;0&quot;
+		exit
+	fi
+}
+
+function qb_del(){
+	if [ ${qb_v} == &quot;1&quot; ]
+	then
+		curl &quot;${qb_web_url}/api/v2/torrents/delete?hashes=$1&amp;deleteFiles=true&quot; --cookie ${cookie}
+	elif [ ${qb_v} == &quot;2&quot; ]
+	then
+		curl -X POST -d &quot;hashes=$1&quot; &quot;${qb_web_url}/command/deletePerm&quot; --cookie ${cookie}
+	else
+		echo &quot;删除错误&quot; &gt;&gt; ${log_dir}/autodel.log
+		echo &quot;qb_v=${qb_v}&quot; &gt;&gt; ${log_dir}/autodel.log
+	fi
+}
+
+function qb_get_status(){
+	qb_login
+	if [ ${qb_v} == &quot;1&quot; ]
+	then
+		completed_torrents_num=$(curl &quot;${qb_web_url}/api/v2/torrents/info?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq '.[] | length' | wc -l)
+		for((i=0;i&lt;${completed_torrents_num};i++));  
+		do
+			del_flag=$(curl &quot;${qb_web_url}/api/v2/torrents/info?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq &quot;.[$i] | .tags&quot; | sed s/\&quot;//g | grep -P -o &quot;${auto_del_flag}&quot;)
+			if [ -z &quot;${del_flag}&quot; ]
+			then
+				del_flag=&quot;null&quot;
+			fi
+			if [ ${del_flag} == &quot;${auto_del_flag}&quot; ]
+			then
+				real_ratio=$(curl &quot;${qb_web_url}/api/v2/torrents/info?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq &quot;.[$i] | .ratio&quot; | grep -P -o &quot;^[0-9]\.[0-9]{2}&quot;)
+				if [ -z &quot;${real_ratio}&quot; ]
+				then
+					real_ratio=0
+				fi
+				del_hash=$(curl &quot;${qb_web_url}/api/v2/torrents/info?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq &quot;.[$i] | .hash&quot; | sed s/\&quot;//g)
+				if [ $(echo &quot;${real_ratio} &gt;= ${expect_ratio}&quot;|bc) = 1 ]
+				then
+					del_hash=$(curl &quot;${qb_web_url}/api/v2/torrents/info?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq &quot;.[$i] | .hash&quot; | sed s/\&quot;//g)
+					qb_del ${del_hash}
+					echo &quot;做种率${real_ratio}≥${expect_ratio}，自动删除种子，种子Hash:${del_hash}&quot; &gt;&gt; ${log_dir}/autodel.log
+				fi
+			fi
+		done
+	elif [ ${qb_v} == &quot;2&quot; ]
+	then
+		completed_torrents_num=$(curl &quot;${qb_web_url}/query/torrents?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq '.[] | length' | wc -l)
+		for((i=0;i&lt;${completed_torrents_num};i++));  
+		do
+			del_flag=$(curl &quot;${qb_web_url}/query/torrents?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq &quot;.[$i] | .category&quot; | sed s/\&quot;//g)
+			if [ -z &quot;${del_flag}&quot; ]
+			then
+				del_flag=&quot;null&quot;
+			fi
+			if [ ${del_flag} == &quot;${auto_del_flag}&quot; ]
+			then
+				real_ratio=$(curl &quot;${qb_web_url}/query/torrents?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq &quot;.[$i] | .ratio&quot; | grep -P -o &quot;^[0-9]\.[0-9]{2}&quot;)
+				if [ -z &quot;${real_ratio}&quot; ]
+				then
+					real_ratio=0
+				fi
+				del_hash=$(curl &quot;${qb_web_url}/query/torrents?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq &quot;.[$i] | .hash&quot; | sed s/\&quot;//g)
+				if [ $(echo &quot;${real_ratio} &gt;= ${expect_ratio}&quot;|bc) = 1 ]
+				then
+					del_hash=$(curl &quot;${qb_web_url}/query/torrents?filter=completed&quot; --cookie &quot;${cookie}&quot; | jq &quot;.[$i] | .hash&quot; | sed s/\&quot;//g)
+					qb_del ${del_hash}
+					echo &quot;做种率${real_ratio}≥${expect_ratio}，自动删除种子，种子Hash:${del_hash}&quot; &gt;&gt; ${log_dir}/autodel.log
+				fi
+			fi
+		done
+	else
+		echo &quot;获取错误&quot; &gt;&gt; ${log_dir}/autodel.log
+		echo &quot;qb_v=${qb_v}&quot; &gt;&gt; ${log_dir}/autodel.log
+	fi
+}
+
+qb_get_status
+</code></pre>
+<p>给予权限<br>
+<code>chmod +x ratio_mon.sh</code><br>
+添加crontab计划任务<br>
+<code>*/1 * * * * bash /root/ratio_mon.sh</code></p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/Xb91mZxfN/" class="tag">
+                    VPS
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/4zQCH92s8s/" class="tag">
+                    折腾
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/1EBFGHyOq7/" class="tag">
+                    debian
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/online-markdown-editor/">
+                  <h3 class="post-title">
+                    在线markdown编辑器
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

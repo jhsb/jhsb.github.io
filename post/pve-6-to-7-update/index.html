@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>【教程】Proxmox VE（PVE）从6.X 升级到 7.0 记录 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！
+
+1、在电脑上用Xshell之类的工具登录到PVE的SSH下，输入以下..." />
+    <meta name="keywords" content="运维,教程,PVE,AIO,折腾" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">【教程】Proxmox VE（PVE）从6.X 升级到 7.0 记录</h2>
+            <div class="post-date">2022-08-11</div>
+            
+            <div class="post-content" v-pre>
+              <p>在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！</p>
+<!-- more -->
+<p>1、在电脑上用Xshell之类的工具登录到PVE的SSH下，输入以下命令（带有#开头内容为注释，不需要输入的，只输入不是#开头的，下同）：</p>
+<pre><code>#修改PVE源
+sed -i 's/buster\/updates/bullseye-security/g;s/buster/bullseye/g' /etc/apt/sources.list
+#删除PVE企业源
+rm -rf /etc/apt/sources.list.d/pve-install-repo.list
+</code></pre>
+<p>2、输入<code>vi /etc/apt/sources.list</code> ，按 i 进入编辑状态，把原来的内容全部删除，复制以下内容进去粘贴，保存退出；</p>
+<pre><code># debian aliyun source
+#deb https://mirrors.tuna.tsinghua.edu.cn/debian bullseye main contrib non-free
+#deb https://mirrors.tuna.tsinghua.edu.cn/debian bullseye-updates main contrib non-free
+#deb https://mirrors.tuna.tsinghua.edu.cn/debian-security bullseye-security main contrib non-free
+#deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription
+deb http://ftp.debian.org/debian bullseye main contrib
+deb http://ftp.debian.org/debian bullseye-updates main contrib
+# security updates
+deb http://security.debian.org bullseye-security main contrib
+deb http://download.proxmox.com/debian/pve bullseye pve-no-subscription
+</code></pre>
+<p>3、输入以下命令更新系统（由于PVE的源在国外服务器，建议全局开飞机，否则更新非常的慢），期间有可能弹出类似下图的提示需要选择的界面，直接无脑的按回车就行：</p>
+<p><code>apt update &amp;&amp; apt dist-upgrade -y</code></p>
+<p>4、更新完成，输入 <code>reboot</code> 重启PVE；</p>
+<p>5、启动好了以后，继续输入以下命令：<br>
+<code>apt autoremove -y</code><br>
+6、敲命令先查看当前系统内核，然后卸载无用的内核，保持系统干净（强迫症发作了）：</p>
+<pre><code>#查看当前用的内核
+uname -a
+#查看系统有多少个内核
+dpkg --get-selections |grep kernel
+
+#卸载无用内核，命令后面的pve-kernel-5.3.13-1-pve，是根据上一条命令显示出来的内核，需要修改成你自己PVE显示不用的，后面显示有purge字样的为系统使用中，不可以卸载的，其他的均可以卸载）
+dpkg --purge --force-remove-essential pve-kernel-5.3.13-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.3.13-3-pve
+dpkg --purge --force-remove-essential pve-kernel-5.3.18-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.3.18-2-pve
+dpkg --purge --force-remove-essential pve-kernel-5.3.18-3-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4 
+dpkg --purge --force-remove-essential pve-kernel-5.4.101-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.103-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.106-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.114-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.119-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.124-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.34-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.41-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.44-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.44-2-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.55-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.60-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.65-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.73-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.78-1-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.78-2-pve
+dpkg --purge --force-remove-essential pve-kernel-5.4.98-1-pve
+
+#把不用的内核删除完成后，更新引导菜单
+update-grub
+#重启PVE
+reboot
+</code></pre>
+<p>7、删除完成后再次查看内核，只有在使用的，没有多余的了；</p>
+<p>8、进入PVE以后，系统可能还会自动重启3-4次，属于正常现象，请耐心等候，不要以为机子出了问题。等机器不再重启后，就可以把虚拟机启动起来。</p>
+<p>9、优化PVE：</p>
+<pre><code>#安装时间同步工具，自动同步时间 
+apt install chrony -y
+#安装网络配置修改后自动应用刷新的工具
+apt install ifupdown2 -y
+#删除以前的时间同步工具
+apt remove systemd-timesyncd -y
+apt-get remove --purge systemd-timesyncd
+</code></pre>
+<p>10、再回到网页端，已经更新到7.0-10了。</p>
+<p>2020年7月27日更新：</p>
+<p>如果你的PVE还是5.X版本，是不可以直接从5.X升级到7.0的。需要先从5.X升级到6.0，然后才可以从6.0升级到7.0。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/yun-wei/" class="tag">
+                    运维
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/jiao-cheng/" class="tag">
+                    教程
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/pve/" class="tag">
+                    PVE
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/aio/" class="tag">
+                    AIO
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/4zQCH92s8s/" class="tag">
+                    折腾
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/pve-iommu-zhitong/">
+                  <h3 class="post-title">
+                    PVE直通硬件教程
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

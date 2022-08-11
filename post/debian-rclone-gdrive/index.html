@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>在Debian/Ubuntu上使用rclone挂载Google Drive网盘 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="说明：我们很多人喜欢用VPS做离线下载，不过由于有的服务器硬盘太小了，装不了太多电影资源啥的，我们就需要想办法了，之前说过可以通过挂载FTP来增大空间，参考：Linux VPS通过安装CurlFtpFS来挂载FTP，这里再说个挂载Googl..." />
+    <meta name="keywords" content="rclone,PT,qbittorrent,VPS,debian" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">在Debian/Ubuntu上使用rclone挂载Google Drive网盘</h2>
+            <div class="post-date">2022-06-22</div>
+            
+            <div class="post-content" v-pre>
+              <p>说明：我们很多人喜欢用VPS做离线下载，不过由于有的服务器硬盘太小了，装不了太多电影资源啥的，我们就需要想办法了，之前说过可以通过挂载FTP来增大空间，参考：Linux VPS通过安装CurlFtpFS来挂载FTP，这里再说个挂载Google Drive网盘的方法，毕竟Google Drive有15G免费的空间，有的也有无限空间，都可以利用上去。</p>
+<!-- more -->
+<p>#安装<br>
+官方脚本<br>
+<code>curl https://rclone.org/install.sh | sudo bash</code></p>
+<p>初始化配置<br>
+<code>rclone config</code></p>
+<p>填写说明</p>
+<pre><code>n) New remote
+s) Set configuration password
+q) Quit config
+n/s/q&gt; n
+name&gt; Rats  #配置名称，随便填
+Type of storage to configure.
+Enter a string value. Press Enter for the default (&quot;&quot;).
+Choose a number from below, or type in your own value
+ 1 / 1Fichier
+   \ &quot;fichier&quot;
+ 2 / Alias for an existing remote
+   \ &quot;alias&quot;
+ 3 / Amazon Drive
+   \ &quot;amazon cloud drive&quot;
+ 4 / Amazon S3 Compliant Storage Provider (AWS, Alibaba, Ceph, Digital Ocean, Dreamhost, IBM COS, Minio, etc)
+   \ &quot;s3&quot;
+ 5 / Backblaze B2
+   \ &quot;b2&quot;
+ 6 / Box
+   \ &quot;box&quot;
+ 7 / Cache a remote
+   \ &quot;cache&quot;
+ 8 / Dropbox
+   \ &quot;dropbox&quot;
+ 9 / Encrypt/Decrypt a remote
+   \ &quot;crypt&quot;
+10 / FTP Connection
+   \ &quot;ftp&quot;
+11 / Google Cloud Storage (this is not Google Drive)
+   \ &quot;google cloud storage&quot;
+12 / Google Drive
+   \ &quot;drive&quot;
+13 / Google Photos
+   \ &quot;google photos&quot;
+14 / Hubic
+   \ &quot;hubic&quot;
+15 / JottaCloud
+   \ &quot;jottacloud&quot;
+16 / Koofr
+   \ &quot;koofr&quot;
+17 / Local Disk
+   \ &quot;local&quot;
+18 / Mega
+   \ &quot;mega&quot;
+19 / Microsoft Azure Blob Storage
+   \ &quot;azureblob&quot;
+20 / Microsoft OneDrive
+   \ &quot;onedrive&quot;
+21 / OpenDrive
+   \ &quot;opendrive&quot;
+22 / Openstack Swift (Rackspace Cloud Files, Memset Memstore, OVH)
+   \ &quot;swift&quot;
+23 / Pcloud
+   \ &quot;pcloud&quot;
+24 / Put.io
+   \ &quot;putio&quot;
+25 / QingCloud Object Storage
+   \ &quot;qingstor&quot;
+26 / SSH/SFTP Connection
+   \ &quot;sftp&quot;
+27 / Union merges the contents of several remotes
+   \ &quot;union&quot;
+28 / Webdav
+   \ &quot;webdav&quot;
+29 / Yandex Disk
+   \ &quot;yandex&quot;
+30 / http Connection
+   \ &quot;http&quot;
+31 / premiumize.me
+   \ &quot;premiumizeme&quot;
+Storage&gt; 12  #选择12，Google Drive，注意该序列号会随时变化，看清楚再填
+Google Application Client Id - leave blank normally.
+client_id&gt;  #留空 
+Google Application Client Secret - leave blank normally.
+client_secret&gt;  #留空
+Service Account Credentials JSON file path - needed only if you want use SA instead of interactive login.
+service_account_file&gt;  #留空
+Choose a number from below, or type in your own value
+ 1 / Full access all files, excluding Application Data Folder.
+   \ &quot;drive&quot;
+ 2 / Read-only access to file metadata and file contents.
+   \ &quot;drive.readonly&quot;
+   / Access to files created by rclone only.
+ 3 | These are visible in the drive website.
+   | File authorization is revoked when the user deauthorizes the app.
+   \ &quot;drive.file&quot;
+   / Allows read and write access to the Application Data folder.
+ 4 | This is not visible in the drive website.
+   \ &quot;drive.appfolder&quot;
+   / Allows read-only access to file metadata but
+ 5 | does not allow any access to read or download file content.
+   \ &quot;drive.metadata.readonly&quot;
+scope&gt; 1 
+ID of the root folder
+Leave blank normally.
+Fill in to access &quot;Computers&quot; folders. (see docs).
+Enter a string value. Press Enter for the default (&quot;&quot;).
+root_folder_id&gt; 
+Service Account Credentials JSON file path 
+Leave blank normally.
+Needed only if you want use SA instead of interactive login.
+Enter a string value. Press Enter for the default (&quot;&quot;).
+service_account_file&gt; 
+Edit advanced config? (y/n)
+y) Yes
+n) No
+y/n&gt; n  #输入n
+Remote config
+Use auto config?
+ * Say Y if not sure
+ * Say N if you are working on a remote or headless machine
+y) Yes
+n) No
+y/n&gt; n  #输入n
+If your browser doesn't open automatically go to the following link: https://accounts.google.com/o/  #打开该地址获取code
+Log in and authorize rclone for access
+Enter verification code&gt;hjdd  #输入你获取到的code
+Configure this as a team drive?
+y) Yes
+n) No
+y/n&gt; n  #输入n
+--------------------
+[Rats]
+type = drive
+client_id = 85042871
+client_secret = D72gPc
+scope = drive
+token = {&quot;access_token&quot;:&quot;y902Z&quot;}
+--------------------
+y) Yes this is OK
+e) Edit this remote
+d) Delete this remote
+y/e/d&gt; y  #输入y
+Current remotes:
+
+Name                 Type
+====                 ====
+Rats                 drive
+
+e) Edit existing remote
+n) New remote
+d) Delete remote
+r) Rename remote
+c) Copy remote
+s) Set configuration password
+q) Quit config
+e/n/d/r/c/s/q&gt; q  #输入q保存退出
+</code></pre>
+<p>安装挂载工具<br>
+<code>apt install fuse -y</code></p>
+<p>挂载为磁盘</p>
+<pre><code>#新建本地文件夹，路径自己定，即下面的LocalFolder
+mkdir /root/GoogleDrive
+#挂载为磁盘，下面的DriveName、Folder、LocalFolder参数根据说明自行替换
+rclone mount DriveName:Folder LocalFolder --copy-links --no-gzip-encoding --no-check-certificate --allow-other --allow-non-empty --umask 000
+</code></pre>
+<p>DriveName为初始化配置填的name，Folder为Google Drive里的文件夹，LocalFolder为VPS上的本地文件夹<br>
+挂载成功后，输入df -h命令查看即可！</p>
+<h1 id="开机自启">开机自启</h1>
+<p>先新建systemd配置文件，适用CentOS 7、Debian 8+、Ubuntu 16+。</p>
+<p>再使用命令：</p>
+<pre><code>#将后面修改成你上面手动运行命令中，除了rclone的全部参数
+command=&quot;mount DriveName:Folder LocalFolder --copy-links --no-gzip-encoding --no-check-certificate --allow-other --allow-non-empty --umask 000&quot;
+#以下是一整条命令，一起复制到SSH客户端运行
+cat &gt; /etc/systemd/system/rclone.service &lt;&lt;EOF
+[Unit]
+Description=Rclone
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=$(command -v rclone) ${command}
+Restart=on-abort
+User=root
+
+[Install]
+WantedBy=default.target
+EOF
+</code></pre>
+<p>开始启动：<br>
+<code>systemctl start rclone</code></p>
+<p>设置开机自启：<br>
+<code>systemctl enable rclone</code><br>
+其他命令：</p>
+<pre><code>重启：systemctl restart rclone
+停止：systemctl stop rclone
+状态：systemctl status rclone
+</code></pre>
+<p>如果你想挂载多个网盘，那么将systemd配置文件的rclone.service改成rclone1.service即可，重启动什么的同样换成rclone1。</p>
+<p>高级范例：</p>
+<pre><code>[Unit]
+Description=Rclone
+After=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/rclone mount pmgc:/ /mnt/pmgc \
+--umask 0000 \
+ --default-permissions \
+ --no-check-certificate \
+ --allow-non-empty \
+ --allow-other \
+ --low-level-retries 200 \
+ --buffer-size 32M \
+ --vfs-read-chunk-size 64M \
+ --vfs-read-chunk-size-limit 1G \
+ --buffer-size 512M
+ExecStop=/bin/fusermount -u /mnt/pmgc
+Restart=on-abort
+User=root
+
+[Install]
+WantedBy=default.target
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/rclone/" class="tag">
+                    rclone
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/pt/" class="tag">
+                    PT
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/qbittorrent/" class="tag">
+                    qbittorrent
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/Xb91mZxfN/" class="tag">
+                    VPS
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/1EBFGHyOq7/" class="tag">
+                    debian
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/debian-install-qbittorrent-box/">
+                  <h3 class="post-title">
+                    在DEBIAN上安装QBITTORRENT-NOX
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

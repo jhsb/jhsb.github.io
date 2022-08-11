@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>【教程】proxmox集群添加、删除节点 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="这里仅简单记录几点以备参考。
+
+1、加入集群的节点一定要确保存储数量一致！！！，否则会拖死集群
+2、节点加入集群失败、节点死机等情况删除节点的操作如下：
+#在待隔离节点上停止 pve-cluster 服务
+systemctl stop pv..." />
+    <meta name="keywords" content="运维,教程,PVE,AIO" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">【教程】proxmox集群添加、删除节点</h2>
+            <div class="post-date">2022-08-11</div>
+            
+            <div class="post-content" v-pre>
+              <p>这里仅简单记录几点以备参考。</p>
+<!-- more -->
+<p>1、加入集群的节点一定要确保存储数量一致！！！，否则会拖死集群</p>
+<p>2、节点加入集群失败、节点死机等情况删除节点的操作如下：</p>
+<pre><code class="language-shell">#在待隔离节点上停止 pve-cluster 服务
+systemctl stop pve-cluster.service
+systemctl stop corosync.service
+
+#将待隔离节点的集群文件系统设置为本地模式
+pmxcfs  -l
+
+#删除 corosync 配置文件
+rm /etc/pve/corosync.conf
+rm -rf /etc/corosync/*
+
+#重新启动集群文件系统服务
+killall pmxcfs
+systemctl start pve-cluster.service
+
+#删除故障节点node文件
+cd /etc/pve/nodes
+ls
+rm -rf /etc/pve/nodes/pve2    #改成故障节点对应路径
+</code></pre>
+<p>3、清理集群残留信息：</p>
+<pre><code class="language-shell">pvecm delnode NodeName
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/yun-wei/" class="tag">
+                    运维
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/jiao-cheng/" class="tag">
+                    教程
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/pve/" class="tag">
+                    PVE
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/aio/" class="tag">
+                    AIO
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/pve-6-to-7-update/">
+                  <h3 class="post-title">
+                    【教程】Proxmox VE（PVE）从6.X 升级到 7.0 记录
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

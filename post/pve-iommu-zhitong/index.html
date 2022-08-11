@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>PVE直通硬件教程 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="最近入手了一台小主机，一直在研究把玩它，导致我博客好久没有更新了。
+
+添加iommu
+Intel CPU
+shell里面输入命令：
+nano /etc/default/grub
+在里面找到：
+GRUB_CMDLINE_LINUX_DEFAU..." />
+    <meta name="keywords" content="PVE,AIO,折腾" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">PVE直通硬件教程</h2>
+            <div class="post-date">2022-08-02</div>
+            
+            <div class="post-content" v-pre>
+              <p>最近入手了一台小主机，一直在研究把玩它，导致我博客好久没有更新了。</p>
+<!-- more -->
+<h1 id="添加iommu">添加iommu</h1>
+<h2 id="intel-cpu">Intel CPU</h2>
+<p>shell里面输入命令：<br>
+<code>nano /etc/default/grub</code><br>
+在里面找到：<br>
+<code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet&quot;</code><br>
+然后修改为<br>
+<code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet intel_iommu=on&quot;</code><br>
+在更新一下<br>
+<code>update-grub</code></p>
+<h2 id="amd-cpu">AMD CPU</h2>
+<p>shell里面输入命令：<br>
+<code>nano /etc/default/grub</code><br>
+在里面找到：<br>
+<code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet&quot;</code><br>
+然后修改为<br>
+<code>GRUB_CMDLINE_LINUX_DEFAULT=&quot;quiet amd_iommu=on&quot;</code><br>
+在更新一下<br>
+<code>update-grub</code></p>
+<h1 id="新增所需模块">新增所需模块</h1>
+<p>修改文件<code>/etc/modules</code>,加入如下的行<br>
+<code>nano /etc/modules</code><br>
+在里面填入</p>
+<pre><code>vfio
+vfio_iommu_type1
+vfio_pci
+vfio_virqfd
+</code></pre>
+<p>执行命令来更新initramfs<br>
+<code>update-initramfs -u -k all</code><br>
+重启PVE虚拟机</p>
+<h1 id="无需借助任何软件直接转换openwrt的img文件为虚拟磁盘">无需借助任何软件直接转换openwrt的img文件为虚拟磁盘</h1>
+<p><code>qm importdisk 102 /var/lib/vz/template/iso/openwrt.img local-lvm</code><br>
+以上代码102对应的为虚拟机， <code>/var/lib/vz/template/iso/openwrt.img</code>对应的是上传的路径。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/pve/" class="tag">
+                    PVE
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/aio/" class="tag">
+                    AIO
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/4zQCH92s8s/" class="tag">
+                    折腾
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/BT-fandai-jiaocheng/">
+                  <h3 class="post-title">
+                    宝塔面板“反戴”：悄悄把网站变成自己的
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

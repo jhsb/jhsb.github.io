@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>宝塔面板“反戴”：悄悄把网站变成自己的 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="宝塔面板“反戴”配置，估计很多人都很熟悉，不过要想用得好还需要在稍微的了解下。这篇文章，就来说说，如何更好的使用“反戴”，悄悄的把一个网站完全变成自己的。
+
+1、准备
+1）宝塔新建站点
+2）新建站好后，申请ssl证书，并开启强制301
+3）..." />
+    <meta name="keywords" content="VPS,折腾" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">宝塔面板“反戴”：悄悄把网站变成自己的</h2>
+            <div class="post-date">2022-06-28</div>
+            
+            <div class="post-content" v-pre>
+              <p>宝塔面板“反戴”配置，估计很多人都很熟悉，不过要想用得好还需要在稍微的了解下。这篇文章，就来说说，如何更好的使用“反戴”，悄悄的把一个网站完全变成自己的。</p>
+<!-- more -->
+<p>1、准备<br>
+1）宝塔新建站点</p>
+<p>2）新建站好后，申请ssl证书，并开启强制301</p>
+<p>3）开始设置代理，具体在网站设置，“反戴”就能看到这个功能</p>
+<p>2、开始部署<br>
+1）选一个 目标站点，这里就用网上随便搜素出来的一个图床（https://xxx.xxx.xxx）来作为案列。案列仅作为测试使用~~</p>
+<p>2）要“反戴”这个站点，我们看到这个站点有一些友情链接等，过一会都换成我们自己的。</p>
+<p>3）先来个“反戴”，看图：</p>
+<p>注意：</p>
+<p>目前ulr，填写你要反代的ulr<br>
+发送域名，写你自己的域名<br>
+内容替换，把对方的域名替换为自己的<br>
+4）你那样弄好了，估计还不行，我们还需要其他的设置。具体设置就不去详解了，直接放一段代码。</p>
+<pre><code>#PROXY-START/ 
+  location / { 
+    proxy_ssl_server_name on; 
+    proxy_pass https://xxx.xxx.xxx; 
+    proxy_set_header Accept-Encoding ''; 
+    sub_filter &quot;bing.ioliu.cn&quot; &quot;dd.vsvs.xyz&quot;; 
+    sub_filter_once off; 
+  } 
+  
+#PROXY-END/
+</code></pre>
+<p>5）一些细节调整</p>
+<p>以上保存后，你刷新网页，发现已经成功“反戴”了对方网站，不过还有一些细节需要处理。</p>
+<p>阿里云双11，包含aff链接<br>
+宝塔面板，包含链接<br>
+关于，原信息太多都需要去掉<br>
+我们继续完善上面的配置代码，具体的代码如下：</p>
+<pre><code>#PROXY-START/ 
+  location / { 
+    proxy_ssl_server_name on; 
+    proxy_pass https://xxx.xxx.xxx; 
+    proxy_set_header Accept-Encoding ''; 
+    sub_filter &quot;xxx.xxx.xxx&quot; &quot;yyy.yyyy.yyyy&quot;; 
+    sub_filter &quot;关于&quot; &quot;&quot;; 
+    sub_filter &quot;阿里云双十一&quot; &quot;&quot;; 
+    sub_filter &quot;宝塔面板&quot; &quot;&quot;; 
+    sub_filter_once off; 
+  } 
+  
+#PROXY-END/
+</code></pre>
+<p>保存后，打开网页，发现和自己的没啥区别了。</p>
+<p>6）效果：</p>
+<p>之前的其他信息都被清空，目的达到拉~~</p>
+<p>3、最后<br>
+以上教程仅作为测试使用，整个教程相对简单，更复杂的应用，自己去摸索吧。</p>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/Xb91mZxfN/" class="tag">
+                    VPS
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/4zQCH92s8s/" class="tag">
+                    折腾
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/python-qq-ip-chaxun/">
+                  <h3 class="post-title">
+                    【Python】QQ查IP工具
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

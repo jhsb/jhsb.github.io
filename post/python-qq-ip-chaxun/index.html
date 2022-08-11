@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>【Python】QQ查IP工具 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="根据wireshark分析可知，通过分析qq语音通话，发现采用的是dup协议（应该是叫这个）
+检测数据包的标志020048即可
+
+需要pypacp这个库，但是python3 的环境下，推荐pacp-ct
+具体缺啥库就安装啥....
+impo..." />
+    <meta name="keywords" content="折腾,python" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">【Python】QQ查IP工具</h2>
+            <div class="post-date">2022-06-26</div>
+            
+            <div class="post-content" v-pre>
+              <p>根据wireshark分析可知，通过分析qq语音通话，发现采用的是dup协议（应该是叫这个）<br>
+检测数据包的标志020048即可</p>
+<!-- more -->
+<p>需要pypacp这个库，但是python3 的环境下，推荐pacp-ct<br>
+具体缺啥库就安装啥....</p>
+<pre><code class="language-python">import psutil,netaddr,pcap,dpkt
+import time
+import platform
+import binascii
+ 
+if 'Windows' in platform.platform():
+    import winreg as wr
+
+FINGERPRINT = {
+    'qq.exe':('udp','020048'),
+    'tim.exe':('udp','020048')
+}
+
+IF_REG = r'SYSTEM\CurrentControlSet\Control\Network\{4d36e972-e325-11ce-bfc1-08002be10318}'
+
+def get_interface_name(name):
+    reg = wr.ConnectRegistry(None, wr.HKEY_LOCAL_MACHINE)
+    reg_key = wr.OpenKey(reg, IF_REG)
+    for i in range(wr.QueryInfoKey(reg_key)[0]):
+        subkey_name = wr.EnumKey(reg_key, i)
+        try:
+            reg_subkey = wr.OpenKey(reg_key, subkey_name + r'\Connection')
+            Name = wr.QueryValueEx(reg_subkey, 'Name')[0]
+            wr.CloseKey(reg_subkey)
+            if Name == name:
+                return r'\Device\NPF_' + subkey_name
+        except FileNotFoundError as e:
+            pass
+ 
+    return None
+
+if 'Windows' in platform.platform():
+    iface = get_interface_name('Router') # WLAN
+else:
+    iface = 'enp2s0'
+
+
+def get_pid_sessions(is_show=True):
+    sessions = {}
+    for session in psutil.net_connections(kind=&quot;all&quot;):
+        if session.laddr and session.raddr:
+            pid               = session.pid                                                                                                  #进程pid
+            pid_name          = psutil.Process(int(pid)).name().lower()                                                                      #进程名
+            pid_create_time   = time.strftime(&quot;%Y-%m-%d %H:%M:%S&quot;,time.localtime(psutil.Process(int(pid)).create_time()))                    #进程创建时间
+
+            src_ip               = session.laddr.ip                                                                                          #源IP
+            sport             = session.laddr.port                                                                                           #源端口
+            des_ip               = session.raddr.ip                                                                                          #目的IP
+            dport             = session.raddr.port                                                                                           #目的端口
+            status            = session.status                                                                                               #会话状态
+
+            filter_des_ip        = netaddr.IPAddress(des_ip)                                                                                             #格式化目的IP地址，用于后续判断是否是公网IP
+            filter_src_ip        = netaddr.IPAddress(src_ip)
+            if not filter_des_ip.is_private() and filter_des_ip.is_unicast() and not filter_des_ip.is_link_local() and not filter_src_ip.is_loopback():        #判断目的IP不是私网IP，是一个单播地址，不是linklocal地址，如果符合条件就记录  
+                if pid_name not in sessions:
+                    sessions[pid_name] = {}
+                if pid not in sessions[pid_name]:
+                    sessions[pid_name][pid] = {}
+                if f'{src_ip}:{sport}' not in sessions[pid_name][pid]:
+                    sessions[pid_name][pid][f'{src_ip}:{sport}'] = {}
+                if f'{des_ip}:{dport}' not in sessions[pid_name][pid][f'{src_ip}:{sport}']:
+                    sessions[pid_name][pid][f'{src_ip}:{sport}'][f'{des_ip}:{dport}'] = {
+                        'create_time':'',
+                        'status':''
+                    }
+                sessions[pid_name][pid][f'{src_ip}:{sport}'][f'{des_ip}:{dport}']['status'] = status
+                sessions[pid_name][pid][f'{src_ip}:{sport}'][f'{des_ip}:{dport}']['create_time'] = pid_create_time
+                if is_show:
+                    print(f'[{pid_create_time}]  [{pid}]    [{pid_name}]   [{src_ip}:{sport}] ---&gt; [{des_ip}:{dport}] ---- [{status}]')
+    return sessions
+
+def sniffer(pname):
+    transport   = FINGERPRINT[pname][0]
+    fingerprint = FINGERPRINT[pname][1]
+    pc = pcap.pcap(iface, promisc=True, immediate=True)
+    pc.setfilter(transport)
+    if transport.lower() == 'tcp':
+        check_transport = dpkt.tcp.TCP
+    else:
+        check_transport = dpkt.udp.UDP
+    for timestamp, raw_buf in pc:
+        eth = dpkt.ethernet.Ethernet(raw_buf)
+        
+        if not isinstance(eth.data, dpkt.ip.IP):
+            continue
+        df = bool(eth.data.off &amp; dpkt.ip.IP_DF)
+        mf = bool(eth.data.off &amp; dpkt.ip.IP_MF)
+        offset = eth.data.off &amp; dpkt.ip.IP_OFFMASK
+        traffic = eth.data.data
+        if not isinstance(traffic,check_transport):
+            continue
+        if not len(traffic.data):
+            continue
+        packet =  {
+            'time':time.strftime('%Y-%m-%d %H:%M:%S',(time.localtime(timestamp))),
+            'src':'%d.%d.%d.%d'%tuple(eth.data.src), 
+            'dst':'%d.%d.%d.%d'%tuple(eth.data.dst),
+            'protocol':eth.data.p, 
+            'len':eth.data.len, 
+            'ttl':eth.data.ttl,
+            'df':df, 
+            'mf':mf, 
+            'offset':offset, 
+            'checksum':eth.data.sum,
+            'traffic':binascii.b2a_hex(traffic.data).decode()
+        }
+        if packet['traffic'].startswith(fingerprint):
+            print()
+            for key in packet:
+                length = len(key)
+                ins_space_left  = ''
+                ins_space_right = ''
+                if length &lt; 8:
+                    ins_space_left  = ' ' * int((8-length)/2)
+                    if length % 2:
+                        ins_space_right = ' '* int((8-length)/2+1)
+                    else:
+                        ins_space_right = ' '* int((8-length)/2)
+                print(f'[ {pname} ] [ {ins_space_left}{key}{ins_space_right} ] ----&gt; {packet[key]}')
+        else:
+            print('\r[%s]  No capture!' %time.strftime('%Y-%m-%d %H:%M:%S',(time.localtime(time.time()))),end='')
+
+if __name__ == &quot;__main__&quot;:
+    sessions = get_pid_sessions(False)
+    pid_names = FINGERPRINT.keys()
+    for pname in pid_names:
+        if pname in sessions:
+            sniffer(pname=pname)
+            break
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/4zQCH92s8s/" class="tag">
+                    折腾
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/EMUUlxD8Ag/" class="tag">
+                    python
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/debian-rclone-gdrive/">
+                  <h3 class="post-title">
+                    在Debian/Ubuntu上使用rclone挂载Google Drive网盘
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>

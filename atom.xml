@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+    <id>https://blog.114444.xyz</id>
+    <title>Zhaire</title>
+    <updated>2022-08-11T13:40:14.786Z</updated>
+    <generator>https://github.com/jpmonette/feed</generator>
+    <link rel="alternate" href="https://blog.114444.xyz"/>
+    <link rel="self" href="https://blog.114444.xyz/atom.xml"/>
+    <subtitle>Zhaire的小破站</subtitle>
+    <logo>https://blog.114444.xyz/images/avatar.png</logo>
+    <icon>https://blog.114444.xyz/favicon.ico</icon>
+    <rights>All rights reserved 2022, Zhaire</rights>
+    <entry>
+        <title type="html"><![CDATA[traffmonetizer挂机网赚]]></title>
+        <id>https://blog.114444.xyz/post/traffmonetizer-gua-ji-wang-zhuan/</id>
+        <link href="https://blog.114444.xyz/post/traffmonetizer-gua-ji-wang-zhuan/">
+        </link>
+        <updated>2022-08-11T13:38:31.000Z</updated>
+        <summary type="html"><![CDATA[<p>traffmonetizer适合挂国外小鸡，支持PayPal、比特币和USDT提现。现在注册就送5刀，满10刀提现。可以和peer2profit一起挂。traffmonetizer单价低一点，但流量跑的多。博主目前4台吃灰小鸡，一个月可以跑3刀左右的流量。不跑路一年36刀，加上赠送5刀，收益可观。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>traffmonetizer适合挂国外小鸡，支持PayPal、比特币和USDT提现。现在注册就送5刀，满10刀提现。可以和peer2profit一起挂。traffmonetizer单价低一点，但流量跑的多。博主目前4台吃灰小鸡，一个月可以跑3刀左右的流量。不跑路一年36刀，加上赠送5刀，收益可观。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[x-ui默认配置备份]]></title>
+        <id>https://blog.114444.xyz/post/x-ui-peizhi-beifen/</id>
+        <link href="https://blog.114444.xyz/post/x-ui-peizhi-beifen/">
+        </link>
+        <updated>2022-08-11T13:11:19.000Z</updated>
+        <summary type="html"><![CDATA[<p>客官随意取用~</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>客官随意取用~</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【教程】proxmox集群添加、删除节点]]></title>
+        <id>https://blog.114444.xyz/post/pve-delete-jiedian-cankao-jb/</id>
+        <link href="https://blog.114444.xyz/post/pve-delete-jiedian-cankao-jb/">
+        </link>
+        <updated>2022-08-11T13:07:12.000Z</updated>
+        <summary type="html"><![CDATA[<p>这里仅简单记录几点以备参考。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>这里仅简单记录几点以备参考。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【教程】Proxmox VE（PVE）从6.X 升级到 7.0 记录]]></title>
+        <id>https://blog.114444.xyz/post/pve-6-to-7-update/</id>
+        <link href="https://blog.114444.xyz/post/pve-6-to-7-update/">
+        </link>
+        <updated>2022-08-11T13:02:41.000Z</updated>
+        <summary type="html"><![CDATA[<p>在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！在更新之前，先把虚拟机全部关机，并且取消所有的自动启动！</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[PVE直通硬件教程]]></title>
+        <id>https://blog.114444.xyz/post/pve-iommu-zhitong/</id>
+        <link href="https://blog.114444.xyz/post/pve-iommu-zhitong/">
+        </link>
+        <updated>2022-08-02T14:26:50.000Z</updated>
+        <summary type="html"><![CDATA[<p>最近入手了一台小主机，一直在研究把玩它，导致我博客好久没有更新了。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>最近入手了一台小主机，一直在研究把玩它，导致我博客好久没有更新了。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[宝塔面板“反戴”：悄悄把网站变成自己的]]></title>
+        <id>https://blog.114444.xyz/post/BT-fandai-jiaocheng/</id>
+        <link href="https://blog.114444.xyz/post/BT-fandai-jiaocheng/">
+        </link>
+        <updated>2022-06-28T14:18:10.000Z</updated>
+        <summary type="html"><![CDATA[<p>宝塔面板“反戴”配置，估计很多人都很熟悉，不过要想用得好还需要在稍微的了解下。这篇文章，就来说说，如何更好的使用“反戴”，悄悄的把一个网站完全变成自己的。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>宝塔面板“反戴”配置，估计很多人都很熟悉，不过要想用得好还需要在稍微的了解下。这篇文章，就来说说，如何更好的使用“反戴”，悄悄的把一个网站完全变成自己的。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[【Python】QQ查IP工具]]></title>
+        <id>https://blog.114444.xyz/post/python-qq-ip-chaxun/</id>
+        <link href="https://blog.114444.xyz/post/python-qq-ip-chaxun/">
+        </link>
+        <updated>2022-06-26T06:41:27.000Z</updated>
+        <summary type="html"><![CDATA[<p>根据wireshark分析可知，通过分析qq语音通话，发现采用的是dup协议（应该是叫这个）<br>
+检测数据包的标志020048即可</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>根据wireshark分析可知，通过分析qq语音通话，发现采用的是dup协议（应该是叫这个）<br>
+检测数据包的标志020048即可</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[在Debian/Ubuntu上使用rclone挂载Google Drive网盘]]></title>
+        <id>https://blog.114444.xyz/post/debian-rclone-gdrive/</id>
+        <link href="https://blog.114444.xyz/post/debian-rclone-gdrive/">
+        </link>
+        <updated>2022-06-22T02:33:58.000Z</updated>
+        <summary type="html"><![CDATA[<p>说明：我们很多人喜欢用VPS做离线下载，不过由于有的服务器硬盘太小了，装不了太多电影资源啥的，我们就需要想办法了，之前说过可以通过挂载FTP来增大空间，参考：Linux VPS通过安装CurlFtpFS来挂载FTP，这里再说个挂载Google Drive网盘的方法，毕竟Google Drive有15G免费的空间，有的也有无限空间，都可以利用上去。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>说明：我们很多人喜欢用VPS做离线下载，不过由于有的服务器硬盘太小了，装不了太多电影资源啥的，我们就需要想办法了，之前说过可以通过挂载FTP来增大空间，参考：Linux VPS通过安装CurlFtpFS来挂载FTP，这里再说个挂载Google Drive网盘的方法，毕竟Google Drive有15G免费的空间，有的也有无限空间，都可以利用上去。</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[在DEBIAN上安装QBITTORRENT-NOX]]></title>
+        <id>https://blog.114444.xyz/post/debian-install-qbittorrent-box/</id>
+        <link href="https://blog.114444.xyz/post/debian-install-qbittorrent-box/">
+        </link>
+        <updated>2022-06-22T02:24:01.000Z</updated>
+        <summary type="html"><![CDATA[<p>按下面命令操作即可</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>按下面命令操作即可</p>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Debian 一键开启自带原生BBR]]></title>
+        <id>https://blog.114444.xyz/post/debian-bbr/</id>
+        <link href="https://blog.114444.xyz/post/debian-bbr/">
+        </link>
+        <updated>2022-06-21T02:52:01.000Z</updated>
+        <summary type="html"><![CDATA[<p>复制以下命令，直接粘贴进SSH即可。</p>
+]]></summary>
+        <content type="html"><![CDATA[<p>复制以下命令，直接粘贴进SSH即可。</p>
+]]></content>
+    </entry>
+</feed>

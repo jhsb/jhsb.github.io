@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" >
+
+<title>x-ui默认配置备份 | Zhaire</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+<link rel="shortcut icon" href="https://blog.114444.xyz/favicon.ico?v=1660225209303">
+<link rel="stylesheet" href="https://blog.114444.xyz/styles/main.css">
+
+
+
+<link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+
+    <meta name="description" content="客官随意取用~
+
+备份内容如下：
+{
+  &quot;api&quot;: {
+    &quot;services&quot;: [
+      &quot;HandlerService&quot;,
+      &quot;Logger..." />
+    <meta name="keywords" content="VPS,折腾,debian" />
+  </head>
+  <body>
+    <div id="app" class="main">
+
+      <div class="sidebar" :class="{ 'full-height': menuVisible }">
+  <div class="top-container" data-aos="fade-right">
+    <div class="top-header-container">
+      <a class="site-title-container" href="https://blog.114444.xyz">
+        <img src="https://blog.114444.xyz/images/avatar.png?v=1660225209303" class="site-logo">
+        <h1 class="site-title">Zhaire</h1>
+      </a>
+      <div class="menu-btn" @click="menuVisible = !menuVisible">
+        <div class="line"></div>
+      </div>
+    </div>
+    <div>
+      
+        
+          <a href="/" class="site-nav">
+            首页
+          </a>
+        
+      
+        
+          <a href="/archives" class="site-nav">
+            归档
+          </a>
+        
+      
+        
+          <a href="/tags" class="site-nav">
+            标签
+          </a>
+        
+      
+        
+          <a href="/post/about" class="site-nav">
+            关于
+          </a>
+        
+      
+    </div>
+  </div>
+  <div class="bottom-container" data-aos="flip-up" data-aos-offset="0">
+    <div class="social-container">
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    </div>
+    <div class="site-description">
+      Zhaire的小破站
+    </div>
+    <div class="site-footer">
+      Powered by <a href="https://blog.114444.xyz"  target="_blank">Zhaire</a> | <a class="rss" href="https://blog.114444.xyz/atom.xml" target="_blank">RSS</a>
+    </div>
+  </div>
+</div>
+
+
+      <div class="main-container">
+        <div class="content-container" data-aos="fade-up">
+          <div class="post-detail">
+            <h2 class="post-title">x-ui默认配置备份</h2>
+            <div class="post-date">2022-08-11</div>
+            
+            <div class="post-content" v-pre>
+              <p>客官随意取用~</p>
+<!-- more -->
+<p>备份内容如下：</p>
+<pre><code>{
+  &quot;api&quot;: {
+    &quot;services&quot;: [
+      &quot;HandlerService&quot;,
+      &quot;LoggerService&quot;,
+      &quot;StatsService&quot;
+    ],
+    &quot;tag&quot;: &quot;api&quot;
+  },
+  &quot;inbounds&quot;: [
+    {
+      &quot;listen&quot;: &quot;127.0.0.1&quot;,
+      &quot;port&quot;: 62789,
+      &quot;protocol&quot;: &quot;dokodemo-door&quot;,
+      &quot;settings&quot;: {
+        &quot;address&quot;: &quot;127.0.0.1&quot;
+      },
+      &quot;tag&quot;: &quot;api&quot;
+    }
+  ],
+  &quot;outbounds&quot;: [
+    {
+      &quot;protocol&quot;: &quot;freedom&quot;,
+      &quot;settings&quot;: {}
+    },
+    {
+      &quot;protocol&quot;: &quot;blackhole&quot;,
+      &quot;settings&quot;: {},
+      &quot;tag&quot;: &quot;blocked&quot;
+    }
+  ],
+  &quot;policy&quot;: {
+    &quot;system&quot;: {
+      &quot;statsInboundDownlink&quot;: true,
+      &quot;statsInboundUplink&quot;: true
+    }
+  },
+  &quot;routing&quot;: {
+    &quot;rules&quot;: [
+      {
+        &quot;inboundTag&quot;: [
+          &quot;api&quot;
+        ],
+        &quot;outboundTag&quot;: &quot;api&quot;,
+        &quot;type&quot;: &quot;field&quot;
+      },
+      {
+        &quot;ip&quot;: [
+          &quot;geoip:private&quot;
+        ],
+        &quot;outboundTag&quot;: &quot;blocked&quot;,
+        &quot;type&quot;: &quot;field&quot;
+      },
+      {
+        &quot;outboundTag&quot;: &quot;blocked&quot;,
+        &quot;protocol&quot;: [
+          &quot;bittorrent&quot;
+        ],
+        &quot;type&quot;: &quot;field&quot;
+      }
+    ]
+  },
+  &quot;stats&quot;: {}
+}
+</code></pre>
+
+            </div>
+            
+              <div class="tag-container">
+                
+                  <a href="https://blog.114444.xyz/tag/Xb91mZxfN/" class="tag">
+                    VPS
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/4zQCH92s8s/" class="tag">
+                    折腾
+                  </a>
+                
+                  <a href="https://blog.114444.xyz/tag/1EBFGHyOq7/" class="tag">
+                    debian
+                  </a>
+                
+              </div>
+            
+            
+              <div class="next-post">
+                <div class="next">下一篇</div>
+                <a href="https://blog.114444.xyz/post/pve-delete-jiedian-cankao-jb/">
+                  <h3 class="post-title">
+                    【教程】proxmox集群添加、删除节点
+                  </h3>
+                </a>
+              </div>
+            
+
+            
+
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script type="application/javascript">
+
+AOS.init();
+
+var app = new Vue({
+  el: '#app',
+  data: {
+    menuVisible: false,
+  },
+})
+
+</script>
+
+
+  <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.5.1/build/highlight.min.js"></script>
+  <script>
+    hljs.initHighlightingOnLoad()
+  </script>
+
+
+
+
+
+  </body>
+</html>
